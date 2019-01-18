@@ -7,16 +7,17 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "spring.datasource")
 public class GlobalParamConfig {
 
-	private Integer maxDataCount;
+	private Integer userMaxDataCount;
 	private String userAllTableName;
+	private Integer roleMaxDataCount;
 	private String roleAllTableName;
 
-	public Integer getMaxDataCount() {
-		return maxDataCount;
+	public Integer getUserMaxDataCount() {
+		return userMaxDataCount;
 	}
 
-	public void setMaxDataCount(Integer maxDataCount) {
-		this.maxDataCount = maxDataCount;
+	public void setUserMaxDataCount(Integer userMaxDataCount) {
+		this.userMaxDataCount = userMaxDataCount;
 	}
 
 	public String getUserAllTableName() {
@@ -25,6 +26,14 @@ public class GlobalParamConfig {
 
 	public void setUserAllTableName(String userAllTableName) {
 		this.userAllTableName = userAllTableName;
+	}
+
+	public Integer getRoleMaxDataCount() {
+		return roleMaxDataCount;
+	}
+
+	public void setRoleMaxDataCount(Integer roleMaxDataCount) {
+		this.roleMaxDataCount = roleMaxDataCount;
 	}
 
 	public String getRoleAllTableName() {

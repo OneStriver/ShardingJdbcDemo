@@ -10,7 +10,7 @@ import com.sunkaisens.shard.entity.User;
 public interface UserMapper {
 
 	public void saveUser(User user);
-
-	public Integer countUser(@Param("tableName") String tableName);
+	
+	public Integer countTableData(@Param("tableName") String tableName);
 
 }

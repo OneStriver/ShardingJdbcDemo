@@ -10,20 +10,20 @@ import com.sunkaisens.shard.service.UserService;
 /**
  * 系统用户
  */
-@Service("userService")
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserMapper userMapper;
-
+	
 	@Override
 	public void saveUser(User user) {
 		userMapper.saveUser(user);
 	}
-
-	@Override
-	public Integer countUser(String tableName) {
-		return userMapper.countUser(tableName);
-	}
 	
+	@Override
+	public Integer countTableData(String tableName) {
+		return userMapper.countTableData(tableName);
+	}
+
 }

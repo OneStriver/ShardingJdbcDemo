@@ -11,8 +11,8 @@
         (#{id},#{name},#{address})
     </insert>
     
-    <select id="countUser" parameterType="string" resultType="int">
+    <select id="countTableData" parameterType="string" resultType="int">
     	select count(*) from ${tableName}
     </select>
-	
+    
 </mapper>

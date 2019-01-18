@@ -17,13 +17,14 @@ public class UserController {
     private UserService userService;
     @Autowired
     private RoleService roleService;
-
+    
     //测试
     @RequestMapping(value="addUser")
     public String updateTransactional(@RequestParam(value = "id") Integer id,
                                       @RequestParam(value = "name") String name,
                                       @RequestParam(value = "address") String address) {
-        User user = new User();
+    	
+    	User user = new User();
         user.setId(id);
         user.setName(name);
         user.setAddress(address);

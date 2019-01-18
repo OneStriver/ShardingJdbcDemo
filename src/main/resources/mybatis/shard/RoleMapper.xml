@@ -10,9 +10,5 @@
         VALUES
         (#{id},#{name})
     </insert>
-    
-    <select id="countRole" parameterType="string" resultType="int">
-    	select count(*) from ${tableName}
-    </select>
 	
 </mapper>

@@ -9,6 +9,4 @@ public interface RoleService {
 	
 	public void saveRole(Role role);
 	
-	public Integer countRole(String tableName);
-	
 }

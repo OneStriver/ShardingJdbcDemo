@@ -9,6 +9,6 @@ public interface UserService {
 	
 	public void saveUser(User user);
 	
-	public Integer countUser(String tableName);
+	public Integer countTableData(String tableName);
 	
 }

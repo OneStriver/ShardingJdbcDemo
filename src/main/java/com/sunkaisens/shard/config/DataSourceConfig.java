@@ -41,11 +41,12 @@ public class DataSourceConfig {
 	
 	@Autowired
 	private GlobalParamConfig globalParamConfig;
-
+	
     static final String PACKAGE = "com.sunkaisens.shard.mapper";					//master 目录
     static final String MAPPER_LOCATION = "classpath:mybatis/*/*.xml";				//扫描的 xml 目录
     static final String CONFIG_LOCATION = "classpath:mybatis/mybatis-config.xml"; 	//自定义的mybatis config 文件位置
     static final String TYPE_ALIASES_PACKAGE = "com.sunkaisens.shard.entity"; 		//扫描的 实体类 目录
+    private List<TableRule> tableRuleList = new ArrayList<TableRule>();
     
     //主数据源
     @Value("${spring.datasource.master.driver-class-name}")
@@ -98,6 +99,20 @@ public class DataSourceConfig {
     
     @Bean(name="shardingRule")
     public ShardingRule shardingRule(DataSourceRule dataSourceRule){
+        //绑定表策略，在查询时会使用主表策略计算路由的数据源，因此需要约定绑定表策略的表的规则需要一致，可以一定程度提高效率
+        List<BindingTableRule> bindingTableRules = new ArrayList<BindingTableRule>();
+        bindingTableRules.add(new BindingTableRule(getAllTableRules(dataSourceRule)));
+        return ShardingRule.builder()
+                .dataSourceRule(dataSourceRule)
+                .tableRules(getAllTableRules(dataSourceRule))
+                .bindingTableRules(bindingTableRules)
+                .build();
+    }
+    
+    private List<TableRule> getAllTableRules(DataSourceRule dataSourceRule){
+    	ModuloTableShardingAlgorithm moduloTableShardingAlgorithm = new ModuloTableShardingAlgorithm();
+    	tableRuleList.clear();
+    	//========User表分表========
     	String user_allTableName = globalParamConfig.getUserAllTableName();
     	List<String> user_allTableNameList = Arrays.asList(user_allTableName.split(","));
     	//获取没有数字的表名
@@ -106,10 +121,11 @@ public class DataSourceConfig {
         //具体分库分表策略
         TableRule user_orderTableRule = TableRule.builder(user_rawTableName)
                 .actualTables(user_allTableNameList)
-                .tableShardingStrategy(new TableShardingStrategy("id", new ModuloTableShardingAlgorithm()))
+                .tableShardingStrategy(new TableShardingStrategy("id", moduloTableShardingAlgorithm))
                 .dataSourceRule(dataSourceRule)
                 .build();
-        
+        tableRuleList.add(user_orderTableRule);
+        //========Role表分表========
         String role_allTableName = globalParamConfig.getRoleAllTableName();
     	List<String> role_allTableNameList = Arrays.asList(role_allTableName.split(","));
     	//获取没有数字的表名
@@ -118,18 +134,11 @@ public class DataSourceConfig {
         //具体分库分表策略
         TableRule role_orderTableRule = TableRule.builder(role_rawTableName)
                 .actualTables(role_allTableNameList)
-                .tableShardingStrategy(new TableShardingStrategy("id", new ModuloTableShardingAlgorithm()))
+                .tableShardingStrategy(new TableShardingStrategy("id", moduloTableShardingAlgorithm))
                 .dataSourceRule(dataSourceRule)
                 .build();
-        
-        //绑定表策略，在查询时会使用主表策略计算路由的数据源，因此需要约定绑定表策略的表的规则需要一致，可以一定程度提高效率
-        List<BindingTableRule> bindingTableRules = new ArrayList<BindingTableRule>();
-        bindingTableRules.add(new BindingTableRule(Arrays.asList(user_orderTableRule,role_orderTableRule)));
-        return ShardingRule.builder()
-                .dataSourceRule(dataSourceRule)
-                .tableRules(Arrays.asList(user_orderTableRule,role_orderTableRule))
-                .bindingTableRules(bindingTableRules)
-                .build();
+        tableRuleList.add(role_orderTableRule);
+    	return tableRuleList;
     }
     
     @Bean(name="dataSource")

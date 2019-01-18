@@ -10,7 +10,7 @@ import com.sunkaisens.shard.service.RoleService;
 /**
  * 系统用户
  */
-@Service("roleService")
+@Service
 public class RoleServiceImpl implements RoleService {
 
 	@Autowired
@@ -21,9 +21,4 @@ public class RoleServiceImpl implements RoleService {
 		roleMapper.saveRole(role);
 	}
 
-	@Override
-	public Integer countRole(String tableName) {
-		return roleMapper.countRole(tableName);
-	}
-	
 }
